@@ -1,0 +1,7 @@
+.dummy {
+  color: black;
+}
+.slds-modal__container {
+  max-width: 100rem !important;
+  width: 100% !important;
+}

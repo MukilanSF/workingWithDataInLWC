@@ -1,0 +1,137 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>
+
+        <div class="slds-m-around_xx-small" slot="title">
+            <lightning-icon icon-name="standard:account" alternative-text="Account" size="small"></lightning-icon>
+            <slot>
+                <h1> Account</h1>
+            </slot>
+        </div>
+
+        <div slot="actions">
+        </div>
+
+
+        <div class="slds-m-around_medium">
+            <lightning-tabset variant="scoped">
+                <lightning-tab label="Search">
+                    <div class="slds-m-vertical_medium">
+                        <!-- Label for the search box -->
+                        <label for="searchInput" style="margin-right: 5px; font-weight:bold">Search Account
+                            :</label>
+                        <!-- Search input box -->
+                        <lightning-input type="search" label="" placeholder="Search this list..."
+                            onchange={handleSearchChange}
+                            style="display: inline-block; width: 200px;"></lightning-input>
+                    </div>
+                    <div class="slds-scrollable">
+                        <table
+                            class="slds-table slds-table_cell-buffer slds-table_bordered slds-max-medium-table_stacked-horizontal">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Account Name" style="text-align: center;">
+                                            Account Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Saluation" style="text-align: center;">
+                                            Saluation</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Surname Alias" style="text-align: center;">
+                                            Surname Alias</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Address for search"
+                                            style="text-align: center;">Address for search
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Home Phone" style="text-align: center;">Home
+                                            Phone</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Mobile Phone" style="text-align: center;">
+                                            Mobile Phone</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Email" style="text-align: center;">Email</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="DKID" style="text-align: center;">DKID</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="GAD Excl List" style="text-align: center;">GAD
+                                            Excl List</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={accountData} for:item="account" for:index="index">
+                                    <tr key={account.Id} class="slds-hint-parent">
+                                        <td data-label="Account Name">
+                                            <a href="javascript:void(0);" onclick={handleAccountClick}
+                                                data-accountid={account.Id} data-accountname={account.Name}
+                                                data-dkid={account.DKID__c}>{account.Name}</a>
+                                            <!-- <div class="slds-truncate">{account.Name}</div> -->
+                                        </td>
+                                        <td data-label="Salutation">
+                                            <div class="slds-truncate">{account.Salutation}</div>
+                                        </td>
+                                        <td data-label="Surname Alias">
+                                            <div class="slds-truncate">{account.Surname_Alias__c}</div>
+                                        </td>
+                                        <td data-label="Address for search">
+                                            <div class="slds-truncate">{account.PersonMailingStreet} <br>
+                                                {account.PersonMailingCity} <br> {account.PersonMailingState} <br>
+                                                {account.PersonMailingPostalCode} <br>
+                                                {account.PersonMailingCountry}
+                                            </div>
+                                        </td>
+                                        <td data-label="Home Phone">
+                                            <div class="slds-truncate">{account.PersonHomePhone}</div>
+                                        </td>
+                                        <td data-label="Mobile Phone">
+                                            <div class="slds-truncate">{account.PersonMobilePhone}</div>
+                                        </td>
+                                        <td data-label="Email">
+                                            <div class="slds-truncate">{account.PersonEmail}</div>
+                                        </td>
+                                        <td data-label="DKID">
+                                            <div class="slds-truncate">{account.DKID__c}</div>
+                                        </td>
+                                        <td data-label="GAD Excl List">
+                                            <div class="slds-truncate">{account.GAD_Excl_List__c}</div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- <lightning-layout class="slds-align_absolute-center slds-m-around_medium"> -->
+                    <!-- Previous button -->
+                    <!-- <div class="slds-col slds-size_1-of-3 slds-text-align_left">
+                            <lightning-button-icon icon-name="utility:chevronleft" alternative-text="Previous"
+                                title="Previous" onclick={previousPage} variant="border-filled"></lightning-button-icon>
+                        </div> -->
+                    <!-- Page info -->
+                    <!-- <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                            Page {currentPage} of {totalPages}
+                        </div> -->
+                    <!-- Next button -->
+                    <!-- <div class="slds-col slds-size_1-of-3 slds-text-align_right">
+                            <lightning-button-icon icon-name="utility:chevronright" alternative-text="Next" title="Next"
+                                onclick={nextPage} variant="border-filled"></lightning-button-icon>
+                        </div>
+                    </lightning-layout> -->
+                </lightning-tab>
+                <lightning-tab label="New Account">
+                    <lightning-flow flow-api-name="Screen_Create_Account" flow-finish-behavior="RELOAD"
+                        flow-output-variables={varAccountCollection} onstatuschange={handleNewAccount}></lightning-flow>
+                </lightning-tab>
+            </lightning-tabset>
+        </div>
+    </lightning-card>
+</template>

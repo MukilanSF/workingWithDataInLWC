@@ -1,0 +1,277 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div style="width: 100%;">
+        <div class="slds-text-heading_medium slds-var-p-around_small" style="font-weight: bold;">
+
+            {BatchStatus} {Offerrecord.batchNumber}</div>
+        <div class="slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
+            <div class="slds-var-p-horizontal_small slds-var-p-vertical_small"
+                style="display: flex;background-color:lightgrey">
+                <div class="slds-text-heading_small " style="flex: 1; font-weight: bold">
+                    Batch Details
+                </div>
+                <lightning-button-group>
+                    <lightning-button variant="brand" label="Save Draft" onclick={handleSaveDraft}
+                        class="slds-var-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Complete Batch" onclick={handleCompleteBatch}
+                        class="slds-var-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Amend Batch Details" onclick={handleAmendBatchDetails}
+                        class="slds-var-m-left_x-small"></lightning-button>
+                    <!-- <lightning-button variant="brand-outline" label="Stop All Card Payment Attempts" onclick={handleStopPayment}
+                class="slds-var-m-left_x-small"></lightning-button> -->
+                    <lightning-button variant="brand" label="Cancel" onclick={handleCancel}
+                        class="slds-var-m-left_x-small"></lightning-button>
+                </lightning-button-group>
+            </div>
+            <div class="slds-var-p-around_small">
+                <table class="slds-table slds-table_cell-buffer slds-no-row-hover">
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;">Batch</td>
+                        <td>{Offerrecord.batchNumber}</td>
+                    </tr>
+                    <!-- Row 1 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;">Payment Method
+                            <template if:true={showMOTO}>
+                                <div class="slds-var-p-vertical_small">MOTO Payment</div>
+                            </template>
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">
+
+                            <lightning-combobox name="paymentMethod" label="Payment Method" variant="label-hidden"
+                                value={Offerrecord.paymentMethod} options={paymentOptions}
+                                onchange={handlePaymentChange} disabled={disbalePayment}></lightning-combobox>
+                            <template if:true={showMOTO}>
+                                <lightning-input if:true={showMOTO} type="checkbox" label="MOTO Payments"
+                                    variant="label-hidden" name="motoPayment" onchange={handleMotoPayment}
+                                    class="slds-var-p-top_x-small slds-var-p-bottom_xx-small"></lightning-input>
+                            </template>
+                        </td>
+                        <td style="text-align: right;font-weight: bold;">Fund</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%"><a href={Offerrecord.fundLink}
+                                target="_blank">{Offerrecord.fund}</a></td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;">Voucher</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">
+                            <lightning-input type="text" label="Voucher" variant="label-hidden"
+                                value={Offerrecord.voucher} onchange={handleVoucherChange}></lightning-input>
+                        </td>
+                        <td style="text-align: right;font-weight: bold;">Account</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%"><a href={Offerrecord.accountLink}
+                                target="_blank">{Offerrecord.account}</a></td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;">Slip Number</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">
+                            <lightning-input type="text" label="Paying in Slip Number" variant="label-hidden"
+                                value={Offerrecord.slipNumber} onchange={handleVoucherChange}></lightning-input>
+                        </td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Event</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%"><a href={Offerrecord.eventLink}
+                                target="_blank">{Offerrecord.event}</a></td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Receiving
+                            Date
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">{Offerrecord.formattedDate}</td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Account
+                            Period
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">{Offerrecord.accountPeriod}</td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Total Amount
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">£{Offerrecord.totalAmount}</td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Offering
+                            Summary
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%"><a href={Offerrecord.offeringSummaryLink}
+                                target="_blank">{Offerrecord.offeringSummary}</a></td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Current
+                            Amount
+                        </td>
+                        <td if:false={showCurrentTotalAmount}></td>
+                        <td if:true={showCurrentTotalAmount} style="padding-top: 5px;padding-bottom: 0%">
+                            £{currentTotalAmount}</td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Appeal</td>
+                        <td style="padding-top: 5px;padding-bottom: 0%"><a href={Offerrecord.appealLink}
+                                target="_blank">{Offerrecord.appeal}</a></td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Difference
+                        </td>
+                        <td if:false={showDifferenceAmount}></td>
+                        <td if:true={showDifferenceAmount} style="padding-top: 5px;padding-bottom: 0%">
+                            £{differrenceAmount} <br>
+                            <div if:true={showError} style="color: red;">
+                                Error: Current Amount is greater than Total Amount
+                            </div>
+                        </td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 5px;padding-bottom: 0%">Description
+                        </td>
+                        <td style="padding-top: 5px;padding-bottom: 0%">{Offerrecord.description}</td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <!-- <tr>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
+            <div class="slds-var-p-horizontal_small slds-var-p-vertical_small"
+                style="display: flex;background-color:lightgrey">
+                <div class="slds-text-heading_small " style="flex: 1; font-weight: bold">
+                    Transaction Details
+                </div>
+                <lightning-button-group>
+                    <lightning-button variant="brand" label="Add Donation" onclick={addDonation}
+                        class="slds-var-m-left_x-small">
+                    </lightning-button>
+                    <lightning-button variant="brand" label="Delete" onclick={handleDelete}
+                        class="slds-var-m-left_x-small">
+                    </lightning-button>
+                </lightning-button-group>
+            </div>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <!-- <th>
+                            <lightning-input type="checkbox" onchange={selectAll}></lightning-input>
+                        </th> -->
+                        <th scope="col">Delete</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Supporter</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Gift Type</th>
+                        <th scope="col">DKID</th>
+                        <template if:true={showMOTO}>
+                            <th scope="col">MOTOCardPayment</th>
+                        </template>
+                        <template if:true={showMOTO}>
+                            <th scope="col">Status</th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={Transactions} for:item="item" for:index="index">
+                        <tr class="slds-hint-parent" key={item.Date} data-row-index={index}>
+                            <th scope="row">
+                                <lightning-input type="checkbox" data-index-number={item.tranId} data-item={index}
+                                    onchange={handleCheckboxChange}></lightning-input>
+                            </th>
+                            <!-- Index output -->
+                            <th scope="row">{item.Index}</th>
+
+                            <!-- Date output -->
+                            <th scope="row">{Offerrecord.formattedDate}</th>
+
+                            <!-- Supporter lookup -->
+                            <th scope="row">
+                                <div style="display: flex; align-items: center;">
+                                    <lightning-input style="flex: 1; margin-right: 5px;" type="text"
+                                        variant="label-hidden" data-index={index} value={item.AccountName}
+                                        data-item={item.Supporter} onchange={handleSupporterChange}></lightning-input>
+                                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                        onclick={handleLookupClick} data-index={index}>
+                                        <lightning-icon icon-name="standard:record_lookup"
+                                            alternative-text="Search"></lightning-icon>
+                                    </button>
+                                </div>
+
+                            </th>
+
+                            <!-- Amount input -->
+                            <th scope="row">
+                                <lightning-input type="currency" label="Amount" variant="label-hidden"
+                                    value={item.Amount} data-item={index} onchange={handleAmountChange}
+                                    required></lightning-input>
+                            </th>
+
+                            <!-- GiftType input - type=picklist -->
+                            <th scope="row">
+                                <lightning-combobox name="giftType" label="Gifttype" variant="label-hidden"
+                                    value={item.GiftType} options={giftTypeOptions} data-item={index}
+                                    onchange={handleGiftTypeChange} required></lightning-combobox>
+                            </th>
+
+                            <!-- DKID output -->
+                            <th scope="row">
+                                {item.DKID}
+                            </th>
+
+                            <!-- MOTOCardPayment  -->
+                            <template if:true={showMOTO}>
+                                <th scope="row"> <a href="#" onclick={handleselectMOTO} data-item={item.tranId}>Retry
+                                        Payment</a>{item.MOTOCardPayment}
+                                </th>
+                            </template>
+
+                            <!-- Status output -->
+                            <template if:true={showMOTO}>
+                                <th scope="row">{item.Status}
+                                </th>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+    </div>
+    <!-- <c-custom-lookup-l-w-c></c-custom-lookup-l-w-c> -->
+    <!-- Modal for supporter lookup -->
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open">
+
+
+            <div class="slds-modal__container slds-p-top_xxx-small slds-p-bottom_small">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                    onclick={handleModalClose}>
+                    <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <c-custom-lookup-l-w-c row-index={rowIndex}
+                        onaccountselection={handleSelectedData}></c-custom-lookup-l-w-c>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+    <template if:true={isMoto}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open">
+
+
+            <div class="slds-modal__container slds-p-top_xxx-small slds-p-bottom_small">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                    onclick={handleModalClose}>
+                    <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <iframe src={motoLink} width="100%" height="500px"></iframe>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>
