@@ -1,15 +1,47 @@
 <template>
-    <lightning-card class="card">
-        <div class="slds-text-heading_medium slds-var-p-around_small" style="font-weight: bold;padding-top: 0%;padding-bottom: 2%">Capture Payments for Event Bookings</div>
-        <div class=" divbor slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
+    <div class="toast" if:true={showToast}>
+        <lightning-toast
+            variant={toastVariant}
+            title={toastTitle}
+            message={toastMessage}
+            onclose={handleToastClose}>
+        </lightning-toast>
+    </div>
+    <br>
+
+    <div class="toast" if:true={showToast1}>
+        <lightning-toast
+            variant={toastVariant1}
+            title={toastTitle1}
+            message={toastMessage1}
+            onclose={handleToastClose}>
+        </lightning-toast>
+    </div>
+    <div class="toast" if:true={showToast2}>
+        <lightning-toast
+            variant={toastVariant2}
+            title={toastTitle2}
+            message={toastMessage2}
+            onclose={handleToastClose}>
+        </lightning-toast>
+    </div>
+    <div class="toast" if:true={showToast3}>
+        <lightning-toast
+            variant={toastVariant3}
+            title={toastTitle3}
+            message={toastMessage3}
+            onclose={handleToastClose3}>
+        </lightning-toast>
+    </div>
+    <div class="slds-text-heading_medium slds-var-p-around_small" style="font-weight: bold;">Capture Payments for Event Bookings</div>
+        <div class="slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
             <div class="slds-var-p-horizontal_small slds-var-p-vertical_small"
                 style="display: flex;background-color:lightgray">
                 <div class="slds-text-heading_small " style="flex: 1; font-weight: bold">
                     Enter Batch Details
                 </div>
                 <!-- <div if:true={errorMessage}><span class="slds-text-color_error">Please select at least one record.</span></div> -->
-                <template if:true={errorMessage}><div class="slds-text-color_error errorsize"><span>{errorthroughMessage}</span></div></template>
-                <template if:false={errorMessage}><div><span></span></div></template>
+               
                 <lightning-button-group class="slds-align_absolute-center">
                     <lightning-button variant="brand" label="Save Batch" onclick={handleSaveDraft}
                         class="slds-align_absolute-center slds-var-m-left_x-small"></lightning-button>
@@ -17,16 +49,26 @@
                         class="slds-align_absolute-center slds-var-m-left_x-small"></lightning-button>
                 </lightning-button-group>
             </div>
+            <div class="slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
+             <div class="slds-var-p-horizontal_small slds-var-p-vertical_small"
+                style="display: flex">
             <div class="slds-text-heading_small " style="padding-left:2%; flex: 1; font-weight: bold">
-                Banking Information
+                <button lable="bankinginformation"
+                class="buttonsize slds-button slds-button_icon slds-button_icon-x-small slds-button_icon-border-filled"
+                onclick={handleshowTable} data-field-name="Name" data-sort-direction="desc">
+                &#9660;
+            </button>Banking Information
             </div>
+            </div>
+        </div>
+        <template if:true={showtable}>
             <div class="slds-var-p-around_small">
                 <table class="slds-table slds-table_cell-buffer slds-no-row-hover">
                    <tr>
-                        <td style="text-align: right;font-weight: bold;padding-right:2%">Select Payment Method
+                        <td style="text-align: right;font-weight: bold;padding-right:2%;">Select Payment Method
                             <abbr class="slds-required" title="required">*</abbr>
                         </td>
-                        <td style="padding-top: 0%;padding-bottom: 0%">
+                        <td style="padding-top: 0%;padding-top:0.5%">
                             <!-- <lightning-record-edit-form
                               density="compact"
                               object-api-name={Payments_Batch__c}
@@ -34,7 +76,7 @@
                               onchange={methodHandler}
                             >   
                             </lightning-record-edit-form> -->
-                            <lightning-combobox name="paymentMethod" style="width: 400px;padding-right:2%" label="Payment Method" variant="label-hidden"
+                            <lightning-combobox name="paymentMethod" style="padding-right:2%;width:250px;" label="Payment Method" variant="label-hidden"
                                 options={options} onchange={methodHandler} ></lightning-combobox>
 
                         </td>
@@ -50,74 +92,81 @@
                             <div class="slds-grid">
                                 <div class="slds-col">
                                     <lightning-input type="date" label="Date" variant="label-hidden" data-id="dateInput"
-                                        style="width: 250px;padding-right:2%" onchange={handleVoucherDate} ></lightning-input>
+                                        style="padding-right:2%;width: 150px;" onchange={handleVoucherDate} ></lightning-input>
                                 </div>
                                 <div class="slds-col"><lightning-button label="Today" variant=""
                                         class="slds-text-align_left"
                                         onclick={handleTodaydateClick}>Today</lightning-button></div>
                             </div>
                         </td>
-                        <td style="text-align: right;font-weight: bold;"></td>
+                        <td style="text-align: right;font-weight: bold;padding-top: 0%;padding-bottom: 0%">No. of
+                            records selected</td>
+                        <td style="padding-top: 0%;padding-bottom: 0%">{selectedRecordsCount}</td>
                     </tr>
 
                     <tr>
                         <td style="text-align: right;font-weight: bold;padding-right:2%">PIS Number<abbr class="slds-required"
                                 title="required">*</abbr></td>
                         <td style="padding-top: 0.95%;padding-bottom: 0%">
-                            <lightning-input type="text" label="PIS Number" variant="label-hidden"
-                                onchange={handleVoucherNumber}  style="width: 400px;padding-right:2%"></lightning-input>
-                        </td>
-                        <td style="text-align: right;font-weight: bold;padding-top: 0%;padding-bottom: 0%">No. of
-                            records selected</td>
-                        <td style="padding-top: 0%;padding-bottom: 0%">{selectedRecordsCount}</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right;font-weight: bold;padding-right:2%">Select Bank Account<abbr class="slds-required"
-                                title="required">*</abbr></td>
-                        <td style="width: 426px;padding-top: 0.95%;padding-right:2%">
-                            <lightning-record-edit-form object-api-name="Payments_Batch__c">
-                                <lightning-messages></lightning-messages>
-                                <lightning-input-field class="bank" field-name="Bank_Account__c" data-item={index}
-                                    onchange={handleBankAccChange} variant="label-hidden"  style="width: 100px;"></lightning-input-field>
-                            </lightning-record-edit-form>
+                            <lightning-input type="text" max-length="10" label="PIS Number" variant="label-hidden"
+                                onchange={handleVoucherNumber}  style="width: 250px;padding-right:2%"></lightning-input>
                         </td>
                         <td style="text-align: right;font-weight: bold;padding-top: 0%;padding-bottom: 0%">Total Amount
                             Entered</td>
                         <td style="padding-top: 0%;padding-bottom: 0%">{TotalAmountEntered}</td>
+                       
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;font-weight: bold;padding-right:2%">Select Bank Account<abbr class="slds-required"
+                                title="required">*</abbr></td>
+                        <td style="width: 230px;padding-top: 0.95%;padding-right:2%">
+                            <lightning-record-edit-form object-api-name="Payments_Batch__c">
+                                <lightning-messages></lightning-messages>
+                                <lightning-input-field class="bank" field-name="Bank_Account__c" data-item={index}
+                                    onchange={handleBankAccChange} variant="label-hidden"></lightning-input-field>
+                            </lightning-record-edit-form>
+                        </td>
+                        <td style="text-align: right; font-weight: bold; padding-top: 0%; padding-bottom: 0%">
+                            Difference Amount
+                        </td>
+                        <td style="padding-top: 0%; padding-bottom: 0%">{differenceAmount}</td>
+                        
                     </tr>
                     <tr>
                         <td style="text-align: right;font-weight: bold;padding-right:2.3%">Notes</td>
                         <td style="padding-top: 0%;padding-bottom: 0%">
-                            <lightning-textarea name="notes" type="text" onchange={textHandler} style="width: 400px;padding-right:2%"></lightning-textarea>
+                            <lightning-textarea name="notes" type="text" onchange={textHandler} style="padding-right:2%;width: 250px"></lightning-textarea>
                         </td>
-                        <td style="text-align: right; font-weight: bold; padding-top: 0%; padding-bottom: 0%">
-                            Difference Amount
-                            <template if:true={differenceerror}><div class="slds-text-color_error"><span>Not Equal to Total Amount</span></div></template>
-                        </td>
-                        <td style="padding-top: 0%; padding-bottom: 0%">{differenceAmount}</td>
+                        
                     </tr>
                 </table>
             </div>
+        </template>
         </div>
+        
         <br>
 
-        <div class="divbor slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
-            <div class="slds-var-p-horizontal_small slds-var-p-vertical_small"
+        <div class="slds-box slds-border_left slds-border_bottom slds-border_right slds-border_top slds-p-around_none">
+            <div class="divse slds-var-p-horizontal_small slds-var-p-vertical_small"
                 style="display: flex;background-color:lightgrey">
                 <div class="slds-text-heading_small " style="flex: 1; font-weight: bold">
                     Select Required Records
                 </div>
+            </div>
+            <div class="toast" if:true={showToast4}>
+                <lightning-toast
+                    variant={toastVariant4}
+                    title={toastTitle4}
+                    message={toastMessage4}
+                    onclose={handleToastClose4}>
+                </lightning-toast>
             </div>
             <table class="slds-table slds-table_cell-buffer slds-no-row-hover">
                 <tr>
                     <td>
                         <p>Select records to process and save with the above banking info.</p>
                     </td>
-                    <td>
-                        <template if:true={amountdueerror}>
-                            <div class="slds-text-color_error">Error:Amount due does not exist </div>
-                         </template>
-                    </td>
+                    <td></td>
                     <td style="text-align: right;font-weight: bold;">Batch Total Amount
                         <abbr class="slds-required" title="required">*</abbr>
                     </td>
@@ -131,10 +180,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <p style="font-weight: bold">Show Entries 
+                        <p style="font-weight: bold; padding-right: 0.1%;">Show Entries 
                             <select style="width:fit-content" onchange={handleShowEntries}>
-                                <option value="" >Select</option>
-                                <option value="5" onchange={handleShowEntries}>5</option>
+                                <!-- <option value="3" onchange={handleShowEntries}>select</option> -->
+                                <option value="10" onchange={handleShowEntries}>select</option>
                                 <option value="10" onchange={handleShowEntries}>10</option>
                                 <option value="25" onchange={handleShowEntries}>25</option>
                                 <option value="50" onchange={handleShowEntries}>50</option>
@@ -144,20 +193,21 @@
                     <td></td>
                     <td style="text-align: right;font-weight: bold;">Search</td>
                     <td style="padding-top: 0%;padding-bottom: 0%">
-                        <lightning-input type="text" style="padding-top: 0%; padding-bottom: 1%; width: 220px;" onchange={handleSearch}></lightning-input>
+                        <lightning-input type="Search" style="padding-top: 0%; padding-bottom: 1%; width: 220px;" onchange={handleSearch}></lightning-input>
                     </td>
                     <!-- <td><label class="slds-form-element__label" style="text-align: right;font-weight: bold;">
                             Search</label></td>
                     <td><lightning-input type="text" style="width: 220px;" onchange={handleSearch}></lightning-input></td> -->
                 </tr>
             </table>
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <div>
+            <table class="table slds-table slds-table_cell-buffer ">
                 <thead>
-                    <tr class="slds-truncate slds-line-height_reset">
-                        <th scope="col">
+                    <tr class="slds-truncate slds-line-height_reset thc" style="background-color: #f2f2f2;height: 30px;">
+                        <th scope="col" class="th">
                             Select
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Booking Record">
                                 Booking Record
                                 <button
@@ -171,7 +221,7 @@
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Made By">
                                 Made By
                                 <button
@@ -187,7 +237,7 @@
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Booking Date">
                                 Booking Date
                                 <button
@@ -202,23 +252,23 @@
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Total Amount">
                                 Total Amount
                                 <button
                                     class="buttonsize slds-button slds-button_icon slds-button_icon-x-small slds-button_icon-border-filled"
-                                    onclick={handleTotalAmountSort} data-field-name="TotalAmount"
+                                    onclick={handleTotalAmountSort} data-field-name="TotalAmountbr"
                                     data-sort-direction="asc"> &#9660;
                                 </button>
                                 <button
                                     class="buttonsize slds-button slds-button_icon slds-button_icon-x-small slds-button_icon-border-filled"
-                                    onclick={handleTotalAmountSort} data-field-name="TotalAmount"
+                                    onclick={handleTotalAmountSort} data-field-name="TotalAmountbr"
                                     data-sort-direction="desc">
                                     &#9650;
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Paid Till Date">
                                 Paid Till Date
                                 <button
@@ -234,7 +284,7 @@
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate" title="Amount Due">
                                 Amount Due
                                 <button
@@ -250,7 +300,7 @@
                                 </button>
                             </div>
                         </th>
-                        <th scope="col" class="thc">
+                        <th scope="col" class="th">
                             <div class="slds-truncate " title="Amount Paid Now">
                                 Amount Paid Now
                                 <button
@@ -269,15 +319,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template for:each={currentPageData} for:item="item">
-                        <tr class="slds-hint-parent" key={item.Name} onclick={onDoubleClickEdit}>
+                    <template for:each={currentPageData} for:item="item" for:index="index">
+                        <tr class="slds-hint-parent thc" key={item.Name} onclick={onDoubleClickEdit} style="height: 30px;" data-row-index={index}>
                             <th>
-                                <label for={filteredRecords.Id} class="slds-checkbox">
+
+                                 <lightning-input type="checkbox"  data-item={item.bookingId}
+                                    onchange={handleSelectcheckbox}></lightning-input>
+                                <!--<label for={filteredRecords.Id} class="slds-checkbox">
                                     <input type="checkbox" id={currentPageData.Id} name="selectCheckbox"
-                                        onchange={handleSelectcheckbox}></input>
+                                        onchange={handleSelectcheckbox} data-index={index} data-index-number={item}
+                                        data-name={item.Name} data-row="JSON.stringify(item)"></input>
                                     <span class="slds-checkbox_faux"></span>
                                     <span class="slds-assistive-text">Select Row</span>
-                                </label>
+                                    <span class="slds-checkbox--label"></span>
+                                </label>-->
                             </th>
                             <!-- Select  -->
                             <!-- <th scope="row">{item.Select}</th> -->
@@ -299,10 +354,10 @@
                             <th scope="row">
                                 {item.formattedDate}
                             </th>
-
+                            
                             <!-- Total Amount -->
                             <th scope="row">
-                                {item.TotalAmount}
+                                {item.TotalAmountbr}
                             </th>
 
                             <!-- Paid Till date  -->
@@ -317,30 +372,42 @@
 
                             <!-- Amount paid Now -->
                             <th scope="row">
-                                <lightning-input type="Currency" value="" class="amount-input"
-                                    onchange={handleAmountChange}></lightning-input>
-
+                                <lightning-input type="Currency" value={item.amountPaid} class="amount-input"
+                                    onchange={handleAmountChange} data-index={index}></lightning-input>
+                                    <!-- <template if:true={item.errorMessage}>
+                                        <div class="slds-text-color_error"><span>{amountpaiderror}</span></div>
+                                     </template> -->
+                                
                             </th>
                         </tr>
                     </template>
                 </tbody>
-            </table> </br>
+            </table>
+        </div>
+            <template if:true={matchingrecords}><div class="slds-align_absolute-center slds-text-align_center" style="padding-left: 5.5%;">No matching records found</div></template>
             <table>
                 <tr>
                     <td>
-                        <p class="slds-grid slds-align_absolute-center slds-var-p-vertical_large">Showing {currentPage} to {totalPages} of {totalPages} entries</p>
-                    </td>
-                    <td>
-                        <div class="slds-grid slds-align_absolute-center slds-var-p-vertical_large">
+                        <div class="slds-grid slds-align_absolute-center slds-p-vertical_large">
                             <lightning-button class="previous" label="&#11160; Previous" onclick={previousPage}
                                 disabled={disabledPrevious}></lightning-button> 
+                            <!-- <lightning-button class="next" label="Next  &#11162;" onclick={nextPage}
+                                disabled={disabledNext}></lightning-button> -->
+                        </div>
+                    </td>
+                    <td>
+                        <p class="slds-grid slds-align_absolute-center slds-p-vertical_large" style="padding-right: 2%;">Showing {currentPage} to {totalPages} of {totalPages} entries</p>
+                    </td>
+                    <td>
+                        <div class="slds-grid slds-align_absolute-center slds-p-vertical_large">
+                            <!-- <lightning-button class="previous" label="&#11160; Previous" onclick={previousPage}
+                                disabled={disabledPrevious}></lightning-button>  -->
                             <lightning-button class="next" label="Next  &#11162;" onclick={nextPage}
                                 disabled={disabledNext}></lightning-button>
                         </div>
                     </td>
                 </tr>
             </table>
-        </div>
         
-    </lightning-card>
+    </div>
 </template>
